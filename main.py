@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
 
-intents = discord.Intents()
-intents.all()
-bot = commands.Bot(command_prefix='-', help_command=None, intents=intents)
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(intents=intents, command_prefix='-', help_command=None)
 
 helpCommands = {'helpUsage': '`-help [(opt) command]`',
                 'helpInfo': 'Show this message if no arguments are given or help for a specific message.',

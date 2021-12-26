@@ -30,11 +30,6 @@ async def on_command_error(ctx, error):
     raise error
 
 
-# !
-# TODO help command
-# TODO info command
-# !
-
 # HELP COMMAND
 @bot.command()
 async def help(ctx, arg=None):

@@ -24,7 +24,8 @@ async def on_ready():
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         _embed = discord.Embed(title='Error: command not found.',
-                               description='Sorry but I could not find that command. Type `-help` for a list of commands.',
+                               description='Sorry but I could not find that command. Type `-help` for a list of '
+                                           'commands.',
                                color=0x2ecc71)
         await ctx.send(embed=_embed)
     raise error

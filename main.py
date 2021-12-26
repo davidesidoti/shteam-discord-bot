@@ -44,12 +44,21 @@ async def ping(ctx):
 # SERVER INFO COMMAND
 @bot.command()
 async def serverinfo(ctx):
-    membersInfo = {'Total Users': ctx.guild.member_count, 'Online Users': sum(
-        member.status == discord.Status.online and not member.bot for member in ctx.guild.members),
-                   'Offline Users': sum(
-                       member.status == discord.Status.offline and not member.bot for member in ctx.guild.members),
-                   'Human Members': sum(not member.bot for member in ctx.guild.members),
-                   'Bot Members': sum(member.bot for member in ctx.guild.members)}
+    # MEMBERS COUNT
+    _onlineMembers = 0
+    _offlineMembers = 0
+    _humanMembers = 0
+    _botMembers = 0
+    for member in ctx.guild.members:
+        if member.bot:
+            _botMembers += 1
+        else:
+            _humanMembers += 1
+            if member.status == discord.Status.online:
+                _onlineMembers += 1
+            elif member.status == discord.Status.offline:
+                _offlineMembers += 1
+
     channelsInfo = {"Total Categories": len(ctx.guild.categories), "Total Channels": len(ctx.guild.channels),
                     "Total Text Channels": len(ctx.guild.text_channels),
                     "Total Voice Channels": len(ctx.guild.voice_channels)}
@@ -58,7 +67,7 @@ async def serverinfo(ctx):
 
     _embed = discord.Embed(title='Server Info', color=0x1f8b4c)
     _embed.add_field(name='Members Info',
-                     value=f"Total Users: `{membersInfo['Total Users']}`\nOnline Users: `{membersInfo['Online Users']}`")
+                     value=f"Total Users: `{ctx.guild.member_count}`\nOnline Users: `{_onlineMembers}`\nOffline Users: {_offlineMembers}\nHuman Users: {_humanMembers}\nBot Users: {_botMembers}")
     await ctx.send(embed=_embed)
 
 

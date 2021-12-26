@@ -1,7 +1,9 @@
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='-', help_command=None)
+intents = discord.Intents()
+intents.all()
+bot = commands.Bot(command_prefix='-', help_command=None, intents=intents)
 
 helpCommands = {'helpUsage': '`-help [(opt) command]`',
                 'helpInfo': 'Show this message if no arguments are given or help for a specific message.',
@@ -52,12 +54,17 @@ async def serverinfo(ctx):
     for member in ctx.guild.members:
         if member.bot:
             _botMembers += 1
+            print(f'{member.name} bot')
+            continue
         else:
             _humanMembers += 1
             if member.status == discord.Status.online:
+                print("online")
                 _onlineMembers += 1
+                continue
             elif member.status == discord.Status.offline:
                 _offlineMembers += 1
+                continue
 
     channelsInfo = {"Total Categories": len(ctx.guild.categories), "Total Channels": len(ctx.guild.channels),
                     "Total Text Channels": len(ctx.guild.text_channels),
@@ -67,7 +74,7 @@ async def serverinfo(ctx):
 
     _embed = discord.Embed(title='Server Info', color=0x1f8b4c)
     _embed.add_field(name='Members Info',
-                     value=f"Total Users: `{ctx.guild.member_count}`\nOnline Users: `{_onlineMembers}`\nOffline Users: {_offlineMembers}\nHuman Users: {_humanMembers}\nBot Users: {_botMembers}")
+                     value=f"Total Users: `{ctx.guild.member_count}`\nOnline Users: `{_onlineMembers}`\nOffline Users: `{_offlineMembers}`\nHuman Users: `{_humanMembers}`\nBot Users: `{_botMembers}`")
     await ctx.send(embed=_embed)
 
 

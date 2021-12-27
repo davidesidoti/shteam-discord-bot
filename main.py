@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 
+import difflib
+
 intents = discord.Intents.default()
 intents.presences = True
 intents.members = True
@@ -90,6 +92,35 @@ async def serverinfo(ctx):
                      value=f"Boost Level: `{boostsInfo['Boost Level']}`\nTotal Boosts: `{boostsInfo['Total Boosts']}`",
                      inline=False)
     await ctx.send(embed=_embed)
+
+
+# WEB COMMAND
+@bot.command()
+async def tut(ctx, *, arg):
+    if arg is not None:
+        tutorials = ['center div', 'complete box shadow', 'mid box shadow']
+        tutorial = difflib.get_close_matches(arg, tutorials)
+        if len(tutorial) == 0:
+            _embed = discord.Embed(title=f'`{arg}` not found!',
+                                   description='Sorry but I could not find the tutorial you are looking for.',
+                                   color=0x1f8b4c)
+            await ctx.send(embed=_embed)
+        elif len(tutorial) == 1:
+            # TODO send tutorial for the query
+            pass
+        else:
+            _embed = discord.Embed(title='More than one result found!',
+                                   description=f'More than one result have been found for the query `{arg}`.\nReact with the number of the tutorial you want to open.',
+                                   color=0x1f8b4c)
+            i = 0
+            for tutor in tutorial:
+                i += 1
+                embedText = f'{i} - `{tutor}`'
+                _embed.add_field(name=embedText, value=f'React with `{i}` to choose this tutorial', inline=False)
+            emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
+            message_choice = await ctx.send(embed=_embed)
+            for x in range(i):
+                await message_choice.add_reaction(emojis[x])
 
 
 bot.run('ODIyNTMzMDY0NTE2ODI5MjA0.YFTpnA.BE8U2Micx7hlT8U5AKfTaStNbzE')

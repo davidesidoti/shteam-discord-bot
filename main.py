@@ -1,3 +1,5 @@
+import time
+
 import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
@@ -19,7 +21,8 @@ helpCommands = {'helpUsage': '`-help [(opt) command]`',
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}!')
-    await bot.change_presence(activity=discord.Game(name='Rewriting my code x_x || -help'))
+    await bot.change_presence(activity=discord.Game(
+        name='"Yesterday is history. Tomorrow is a mistery. But today is a gift. That\'s why it is called present" || -help'))
 
 
 @bot.event
@@ -97,30 +100,96 @@ async def serverinfo(ctx):
 # WEB COMMAND
 @bot.command()
 async def tut(ctx, *, arg):
-    if arg is not None:
-        tutorials = ['center div', 'complete box shadow', 'mid box shadow']
-        tutorial = difflib.get_close_matches(arg, tutorials)
-        if len(tutorial) == 0:
-            _embed = discord.Embed(title=f'`{arg}` not found!',
-                                   description='Sorry but I could not find the tutorial you are looking for.',
-                                   color=0x1f8b4c)
-            await ctx.send(embed=_embed)
-        elif len(tutorial) == 1:
-            # TODO send tutorial for the query
-            pass
-        else:
-            _embed = discord.Embed(title='More than one result found!',
-                                   description=f'More than one result have been found for the query `{arg}`.\nReact with the number of the tutorial you want to open.',
-                                   color=0x1f8b4c)
+    # ! EMBED COLOR = 0x1f8b4c
+    tutorials = ['list', 'center div', 'complete box shadow', 'mid box shadow']
+    tutorial = difflib.get_close_matches(arg, tutorials)
+    ###################################################################################################################
+    if len(tutorial) == 0:
+        _embed = discord.Embed(title=f'`{arg}` not found!',
+                               description='Sorry but I could not find the tutorial you are looking for.',
+                               color=0x1f8b4c)
+        await ctx.send(embed=_embed)
+    ###################################################################################################################
+    elif len(tutorial) == 1:
+        # ! PRINT LIST
+        if tutorial[0] == 'list':
+            _embed = discord.Embed(title='Tutorials list', color=0x1f8b4c)
             i = 0
-            for tutor in tutorial:
+            for tutor in tutorials:
+                if tutorials.index(tutor) == 0:
+                    continue
                 i += 1
                 embedText = f'{i} - `{tutor}`'
-                _embed.add_field(name=embedText, value=f'React with `{i}` to choose this tutorial', inline=False)
-            emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
-            message_choice = await ctx.send(embed=_embed)
-            for x in range(i):
-                await message_choice.add_reaction(emojis[x])
+                _embed.add_field(name=embedText, value=f'Type `-tut {tutor}` to show this tutorial.', inline=False)
+            await ctx.send(embed=_embed)
+        # ! PRINT LIST
+
+        # ! PRINT CENTER DIV TUTORIAL
+        if tutorial[0] == 'center div':
+            _embed = discord.Embed(title=f'How to: `{tutorial[0]}`',
+                                   description='Type `-tut` followed by a tutorial you want to see to display it!',
+                                   color=0x1f8b4c)
+            _embed.add_field(name='HTML', value='''
+```html
+<div class="parent">
+    <div class="child">
+        something here!
+    </div>
+</div>
+```
+            ''', inline=False)
+            _embed.add_field(name='CSS', value='''
+```css
+.child {
+    /* width of your choice */
+    width: 50%
+    margin: auto;
+}
+```
+            ''', inline=False)
+            await ctx.send(embed=_embed)
+        # ! PRINT CENTER DIV TUTORIAL
+
+        # ! PRINT COMPLETE BOX SHADOW TUTORIAL
+        elif tutorial[0] == 'complete box shadow':
+            _embed = discord.Embed(title=f'How to: `{tutorial[0]}`',
+                                   description='Type `-tut` followed by a tutorial you want to see to display it!',
+                                   color=0x1f8b4c)
+            _embed.add_field(name='HTML', value='''
+```html
+<div class="shadow">
+    Something here!
+</div>
+```
+            ''', inline=False)
+            _embed.add_field(name='CSS', value='''
+```css
+.shadow {
+    /* box-shadow: h-position v-position blur color */
+    box-shadow: 0 0 3px #ccc;
+}
+```
+            ''', inline=False)
+            await ctx.send(embed=_embed)
+        # ! PRINT COMPLETE BOX SHADOW TUTORIAL
+    ###################################################################################################################
+    else:
+        _embed = discord.Embed(title='More than one result found!',
+                               description=f'More than one result have been found for the query `{arg}`.\nReact with the number of the tutorial you want to open.',
+                               color=0x1f8b4c)
+        i = 0
+        for tutor in tutorial:
+            i += 1
+            embedText = f'{i} - `{tutor}`'
+            _embed.add_field(name=embedText, value=f'React with `{i}` to choose this tutorial', inline=False)
+        #          1     2     3    4     5
+        emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
+        message_choice = await ctx.send(embed=_embed)
+        for x in range(i):
+            await message_choice.add_reaction(emojis[x])
+        time.sleep(1)
+        # TODO display the tutorial the user has reacted to
+        reaction, user = await bot.wait_for('reaction_add')
 
 
 bot.run('ODIyNTMzMDY0NTE2ODI5MjA0.YFTpnA.BE8U2Micx7hlT8U5AKfTaStNbzE')
